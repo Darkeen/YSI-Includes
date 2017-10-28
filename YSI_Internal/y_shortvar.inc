@@ -1,10 +1,9 @@
 /**--------------------------------------------------------------------------**\
-					================================
-					Y Sever Includes - Compiler Pass
-					================================
+                              ====================
+                               YSI - Master Funcs
+                              ====================
 Description:
-	Detect which pass the compiler is on.  Used by y_groups to include code that
-	might be needed before it is known if it is needed (it can be dumped later).
+	Defines new names for native functions.
 Legal:
 	Version: MPL 1.1
 	
@@ -48,10 +47,10 @@ Legal:
 		SA:MP Team past, present and future - SA:MP.
 	
 Version:
-	0.1
+	0.2
 Changelog:
-	14/04/13:
-		First version.
+	21/10/10:
+		Split in to y_shortfunc.
 Functions:
 	Public:
 		-
@@ -79,7 +78,7 @@ Tags:
 	-
 Variables:
 	Global:
-		-.
+		-
 	Static:
 		-
 Commands:
@@ -92,44 +91,18 @@ Natives:
 	-
 \**--------------------------------------------------------------------------**/
 
-#if defined _INC_y_compilerpass
+#if defined _INC_y_shortvar
 	#endinput
 #endif
-#define _INC_y_compilerpass
+#define _INC_y_shortvar
 
-#if defined __COMPILER_SECOND_PASS
-	#define __COMPILER_PASS (1)
-#else
-	#define __COMPILER_PASS (0)
-#endif
-#define COMPILER_1ST_PASS (__COMPILER_PASS == (0))
-#define COMPILER_2ND_PASS (__COMPILER_PASS == (1))
-#define COMPILER_FIRST_PASS  COMPILER_1ST_PASS
-#define COMPILER_SECOND_PASS COMPILER_2ND_PASS
-static stock __COMPILER_SECOND_PASS() {}
+// Public variable.
+public
+	_@ = 0;
 
-#if __Pawn >= 0x0400
-	#error YSI does not yet support PAWN 4.0
-#elseif __Pawn < 0x0300
-	#error YSI does not yet support PAWN 2.0/1.0
-#endif
-
-#if !defined __compat
-	#define __compat 1
-#endif
-
-#if __Pawn == 0x030A && !__compat
-	#define AUTO_INCLUDE_GUARD 0
-#else
-	#define AUTO_INCLUDE_GUARD 1
-#endif
-
-#if __Pawn == 0x030A
-	#define NESTED_ELLIPSIS
-	// Disable the recursion warning in the Russian compiler.
-	#pragma warning push
-	#pragma warning disable 207
-	#pragma disablerecursion
-	#pragma warning pop
-#endif
+// J@ is a "nul" target - send things there if they need ignoring or if a
+// parameter needs using.  I@ is too now.
+stock
+	I@,
+	J@;
 

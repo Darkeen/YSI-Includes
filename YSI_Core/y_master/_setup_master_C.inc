@@ -1,4 +1,4 @@
-#if AUTO_INCLUDE_GUARD
+#if defined _inc__setup_master_C
 	#undef _inc__setup_master_C
 #endif
 

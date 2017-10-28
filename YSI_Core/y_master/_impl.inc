@@ -127,7 +127,7 @@ Natives:
 	-
 \**--------------------------------------------------------------------------**/
 
-#if AUTO_INCLUDE_GUARD
+#if defined _inc__impl
 	#undef _inc__impl
 #endif
 

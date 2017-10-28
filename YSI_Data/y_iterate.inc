@@ -411,12 +411,16 @@ Iterators:
 
 #include "..\YSI_Internal\y_natives"
 #include "..\YSI_Internal\y_shortfunc"
-#include "..\YSI_Internal\y_compilerpass"
+#include "..\YSI_Internal\y_compilerdata"
 #include "..\YSI_Core\y_debug"
 
 #include "y_foreach/impl"
-#include "..\YSI_Coding\y_hooks"
-#include "..\YSI_Coding\y_remote"
+#if _FOREACH_CHARACTERS || _FOREACH_VEHICLES || _FOREACH_ACTORS
+	#include "..\YSI_Coding\y_hooks"
+#endif
+#if _FOREACH_VEHICLES || _FOREACH_ACTORS
+	#include "..\YSI_Coding\y_remote"
+#endif
 #include "y_foreach/iterators"
 
 #if defined YSI_TESTS

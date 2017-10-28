@@ -1,4 +1,4 @@
-#if AUTO_INCLUDE_GUARD
+#if defined _inc__stack_push_013
 	#undef _inc__stack_push_013
 #endif
 

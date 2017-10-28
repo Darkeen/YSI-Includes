@@ -1,9 +1,10 @@
 /**--------------------------------------------------------------------------**\
-					=================================
-					 y_lock - Lock a server's IP.
-					=================================
+					================================
+					Y Sever Includes - Compiler Pass
+					================================
 Description:
-	Ensures that the server is running on the IP specified by "bind".
+	Detect which pass the compiler is on.  Used by y_groups to include code that
+	might be needed before it is known if it is needed (it can be dumped later).
 Legal:
 	Version: MPL 1.1
 	
@@ -17,7 +18,7 @@ Legal:
 	for the specific language governing rights and limitations under the
 	License.
 	
-	The Original Code is the YSI utils include.
+	The Original Code is the YSI master include.
 	
 	The Initial Developer of the Original Code is Alex "Y_Less" Cole.
 	Portions created by the Initial Developer are Copyright (C) 2011
@@ -49,97 +50,97 @@ Legal:
 Version:
 	0.1
 Changelog:
-	25/02/12:
+	14/04/13:
 		First version.
 Functions:
+	Public:
+		-
+	Core:
+		-
 	Stock:
+		-
+	Static:
 		-
 	Inline:
 		-
+	API:
+		-
+	Hooks:
+		-
+Callbacks:
+	-
+Definitions:
+	-
+Enums:
+	-
+Macros:
+	-
+Tags:
+	-
 Variables:
 	Global:
+		-.
+	Static:
 		-
+Commands:
+	-
+Compile options:
+	-
+Operators:
+	-
+Natives:
+	-
 \**--------------------------------------------------------------------------**/
 
-#if defined _INC_y_lock
+#if defined _INC_y_compilerpass
 	#endinput
 #endif
-#define _INC_y_lock
+#define _INC_y_compilerpass
 
-#if defined _inc_y_version
-	#error YSI\y_lock must be the first include if you want to use it.
-#endif
-#if defined _DEBUG
-	#if _DEBUG >= 1
-		#define y_lock%0; _DoYLock(%0);
-	#else
-		#define y_lock%0; _DoYLock();
-	#endif
+#if defined __COMPILER_SECOND_PASS
+	#define __COMPILER_PASS (1)
 #else
-	#define y_lock%0; _DoYLock();
+	#define __COMPILER_PASS (0)
+#endif
+#define COMPILER_1ST_PASS (__COMPILER_PASS == (0))
+#define COMPILER_2ND_PASS (__COMPILER_PASS == (1))
+#define COMPILER_FIRST_PASS  COMPILER_1ST_PASS
+#define COMPILER_SECOND_PASS COMPILER_2ND_PASS
+static stock __COMPILER_SECOND_PASS() {}
+
+#if __Pawn >= 0x0400
+	#error YSI does not yet support PAWN 4.0
+#elseif __Pawn < 0x0300
+	#error YSI does not yet support PAWN 2.0/1.0
 #endif
 
-#if !defined BIND_IP
-	#if defined Y_LOCK_IP
-		#define BIND_IP MAKE_LOCK_IP(Y_LOCK_IP)
-	#else
-		#define BIND_IP MAKE_LOCK_IP(127.0.0.1)
-	#endif
+#if !defined __compat
+	#define __compat 1
 #endif
 
-// MASSIVE reliance on operator precedence here!
-#define MAKE_LOCK_IP(%0.%1.%2.%3) ((%0&0xFF)<<24|(%1&0xFF)<<16|(%2&0xFF)<<8|%3&0xFF)
-
-#define _LOCK_IP_0 (BIND_IP>>>24)
-#define _LOCK_IP_1 (BIND_IP>>>16&0xFF)
-#define _LOCK_IP_2 (BIND_IP>>>8&0xFF)
-#define _LOCK_IP_3 (BIND_IP&0xFF)
-
-#define UNHOOK for(from=AMX_HEADER_PUBLICS;from!=AMX_HEADER_NATIVES;from+= 8)AMX_Write(from,-1);
-
-#if _LOCK_IP_0 == 0
-	#define _LOCK_LEN_0 1
+#if __Pawn == 0x030A && !__compat
+	#define AUTO_INCLUDE_GUARD 0
+	#define COMPILER_HAS_AUTO_INCLUDE_GUARD 0
 #else
-	#define _LOCK_LEN_0 _LOCK_IP_0
+	#define AUTO_INCLUDE_GUARD 1
+	#define COMPILER_HAS_AUTO_INCLUDE_GUARD 1
 #endif
 
-#if _LOCK_IP_1 == 0
-	#define _LOCK_LEN_1 1
+#if __Pawn == 0x030A
+	#define NESTED_ELLIPSIS
+	#define COMPILER_HAS_NESTED_ELLIPSIS (1)
+	#define COMPILER_HAS_USER_WARNINGS   (1)
+	
+	// Disable the recursion warning in the Russian compiler.
+	#pragma warning push
+	#pragma warning disable 207
+	#pragma disablerecursion
+	#pragma warning pop
+	
+	// Disable the recursion warning in the fast compiler.
+	#pragma warning disable 238
 #else
-	#define _LOCK_LEN_1 _LOCK_IP_1
+	#define COMPILER_HAS_NESTED_ELLIPSIS (0)
+	#define COMPILER_HAS_USER_WARNINGS   (0)
 #endif
-
-#if _LOCK_IP_2 == 0
-	#define _LOCK_LEN_2 1
-#else
-	#define _LOCK_LEN_2 _LOCK_IP_2
-#endif
-
-#if _LOCK_IP_3 == 0
-	#define _LOCK_LEN_3 1
-#else
-	#define _LOCK_LEN_3 _LOCK_IP_3
-#endif
-
-#define YSI_LOCK_MODE
-#include "..\YSI_Internal\y_version"
-
-#include "..\YSI_Storage\y_amx"
-#include "..\YSI_Coding\y_hooks"
-
-_DoYLock(P:C(from);)
-{
-	new
-		arr[][] =
-			{
-				";23#w",
-				"32g2"
-			};
-	P:1("%d", from);
-	#pragma unused arr
-	#if !defined _DEBUG || _DEBUG < 1
-		new from;
-	#endif
-	UNHOOK
-}
 
